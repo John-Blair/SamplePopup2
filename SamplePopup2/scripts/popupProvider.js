@@ -7,77 +7,95 @@ gam.common.popupProvider = function ($, options) {
         overlay: ".popup-overlay",
         closeTrigger: null
     }
-      , r = function () {
+      , initialise = function () {
+          // Identify the jquery objects for the trigger, popup and overlay.
           this.trigger = $(this.opts.trigger);
           this.popup = $(this.opts.popup);
           this.overlay = $(this.opts.overlay);
+
+          // calc the top and left position to centre this popup.
+          // This will change when the window is resized.
           this.calculateDimensions = function () {
-              var options = ($(window).width() - this.popup.outerWidth()) / 2
-                , i = ($(window).height() - this.popup.outerHeight()) / 2;
+              var left = ($(window).width() - this.popup.outerWidth()) / 2
+                , top = ($(window).height() - this.popup.outerHeight()) / 2;
               this.popup.css({
-                  left: options,
-                  top: i
+                  left: left,
+                  top: top
               })
           }
       }
-      , u = function () {
+      , createMethods = function () {
+          //Show the popup
           this.show = function () {
-              var i, options;
+              var $popup, options;
               this.calculateDimensions();
-              i = this.popup;
-              options = this.opts.afterShow && typeof this.opts.afterShow == "function" ? this.opts.afterShow : null;
+              $popup = this.popup;
               this.overlay.fadeIn(500, function () {
-                  $(this).is(":visible") && !$(this).is(":animated") && (i.fadeIn(300),
-                  options && options())
+                  $(this).is(":visible") && !$(this).is(":animated") && $popup.fadeIn(300)
               })
           }
           ;
           this.hide = function () {
-              var options = this.opts.afterClose && typeof this.opts.afterClose == "function" ? this.opts.afterClose : null
-                , $ = this.popup;
-              $.stop().hide();
+              var $popup = this.popup;
+              // stop any animation and hide the popup
+              $popup.stop().hide();
+              // hide the overlay.
               this.overlay.fadeOut(300, function () {
-                  $.is(":visible") && $.hide();
-                  options && options()
+                  $popup.is(":visible") && $popup.hide();
               })
           }
       }
-      , f = function () {
+      , bindEvents = function () {
           if (this.trigger)
+
+              // When the trigger is clicked, the popup is displayed.
               this.trigger.on("click", {
                   context: this
               }, function ($) {
                   $.preventDefault();
                   $.data.context.show()
               });
+
           if (this.overlay)
+              // When the overlay is clicked, the popup is hidden.
               this.overlay.on("click", {
                   context: this
-              }, function ($) {
-                  $.preventDefault();
-                  $.stopPropagation();
-                  $.data.context.hide()
+              }, function (event) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  event.data.context.hide()
               });
+
+
           if (this.popup)
+              // When the close x item is clicked on the popup - close the popup.
               this.popup.find(this.opts.closeTrigger).on("click", {
                   context: this
-              }, function ($) {
-                  $.preventDefault();
-                  $.stopPropagation();
-                  $.data.context.hide()
+              }, function (event) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  event.data.context.hide()
               });
+
+          // When the window is resized need to recalulate the central location of the popup.
           $(window).resize({
               context: this
-          }, function ($) {
-              $.data.context.calculateDimensions()
+          }, function (event) {
+              event.data.context.calculateDimensions()
           })
       }
-      , e = function () {
+      , entry = function () {
+          // Deep addition of options to defaults - all options now stored in opts.
           this.opts = $.extend(!0, defaults, options);
-          r.call(this);
-          this.popup && (u.call(this),
-          f.call(this))
+
+          // initialise the popup from the opts.
+          initialise.call(this);
+
+          // create popup operations show and hide.
+
+          this.popup && (createMethods.call(this),
+          bindEvents.call(this))
       };
-    e.call(this)
+    entry.call(this)
 }
 ;
