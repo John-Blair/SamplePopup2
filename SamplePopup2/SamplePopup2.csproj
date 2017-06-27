@@ -67,6 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <Content Include="scripts\jquery-3.1.1.min.map" />
+    <Content Include="scripts\jquery-3.1.1.slim.min.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -75,6 +77,17 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="css\popup.css" />
+    <Content Include="media\Close-small_hover_12x12px.png" />
+    <Content Include="media\Close-small_normal_12x12px.png" />
+    <None Include="scripts\jquery-3.1.1.intellisense.js" />
+    <Content Include="SamplePopup.html" />
+    <Content Include="scripts\jquery-3.1.1.js" />
+    <Content Include="scripts\jquery-3.1.1.min.js" />
+    <Content Include="scripts\jquery-3.1.1.slim.js" />
+    <Content Include="scripts\jquery-3.1.1.slim.min.js" />
+    <Content Include="scripts\popupManager.js" />
+    <Content Include="scripts\popupProvider.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
